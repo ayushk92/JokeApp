@@ -4,6 +4,7 @@ import android.support.v4.content.AsyncTaskLoader;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.mynanodegreeapps.backend.myApi.MyApi;
@@ -21,7 +22,7 @@ import java.io.IOException;
 public class EndpointsAsyncTask extends AsyncTaskLoader<String> {
     private static MyApi myApiService = null;
     private Context context;
-
+    private static final String LOG_TAG = EndpointsAsyncTask.class.getSimpleName();
 
     public EndpointsAsyncTask(Context context) {
         super(context);
@@ -55,7 +56,8 @@ public class EndpointsAsyncTask extends AsyncTaskLoader<String> {
         try {
             return myApiService.getJoke().execute().getJoke();
         } catch (IOException e) {
-            return e.getMessage();
+            Log.e(LOG_TAG,e.getMessage());
         }
+        return null;
     }
 }

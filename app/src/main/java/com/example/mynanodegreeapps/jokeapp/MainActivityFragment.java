@@ -4,7 +4,6 @@ package com.example.mynanodegreeapps.jokeapp;
  * Created by akhatri on 29/01/16.
  */
 import android.support.v4.app.LoaderManager;
-import android.content.Intent;
 import android.support.v4.content.Loader;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -15,10 +14,10 @@ import android.widget.Button;
 import android.widget.Toast;
 
 
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-
-import com.example.mynanodegreeapps.joketellerlibrary.JokeActivity;
+import com.google.android.gms.ads.InterstitialAd;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -33,11 +32,26 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
 
     private static final int JOKE_LOADER = 0;
 
+    InterstitialAd mInterstitialAd;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_main, container, false);
+        final View root = inflater.inflate(R.layout.fragment_main, container, false);
+
+        mInterstitialAd = new InterstitialAd(getContext());
+        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                requestNewInterstitial();
+                tellJoke();
+            }
+        });
+
+        requestNewInterstitial();
 
         AdView mAdView = (AdView) root.findViewById(R.id.adView);
         // Create an ad request. Check logcat output for the hashed device ID to
@@ -52,12 +66,24 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
 
         tellJokeButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
-                tellJoke(v);
+                if (mInterstitialAd.isLoaded()) {
+                    mInterstitialAd.show();
+                } else {
+                    tellJoke();
+                }
             }
         });
 
 
         return root;
+    }
+
+    private void requestNewInterstitial() {
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice("SEE_YOUR_LOGCAT_TO_GET_YOUR_DEVICE_ID")
+                .build();
+
+        mInterstitialAd.loadAd(adRequest);
     }
 
     @Override
@@ -66,7 +92,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         super.onActivityCreated(savedInstanceState);
     }
 
-    public void tellJoke(View view){
+    public void tellJoke(){
         if(jokeText != null)
             Toast.makeText(getActivity(), jokeText,Toast.LENGTH_LONG).show();
     }

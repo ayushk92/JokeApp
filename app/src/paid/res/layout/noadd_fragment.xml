@@ -22,4 +22,13 @@
         android:text="@string/button_text"
         android:id="@+id/tellJokeButton"
         />
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinner"
+        android:progressDrawable="@drawable/circular_progress_bar"
+        android:layout_below="@+id/tellJokeButton"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone"/>
 </RelativeLayout>

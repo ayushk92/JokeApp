@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 
 
 import com.example.mynanodegreeapps.jokeapp.EndpointsAsyncTask;
@@ -35,6 +36,8 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
 
     private String jokeText;
 
+    private ProgressBar mprogressBar;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -47,24 +50,31 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
                 tellJoke(v);
             }
         });
-
+        mprogressBar = (ProgressBar) root.findViewById(R.id.spinner);
 
         return root;
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        getLoaderManager().initLoader(JOKE_LOADER,null,this);
+        //getLoaderManager().initLoader(JOKE_LOADER,null,this);
         super.onActivityCreated(savedInstanceState);
     }
 
     public void tellJoke(View view){
-        if(jokeText != null){
-            //Invoke Android Library
-            Intent intent = new Intent(getActivity(),com.example.mynanodegreeapps.joketellerlibrary.JokeActivity.class);
-            intent.putExtra(JokeActivity.JOKE_KEY,jokeText);
-            this.startActivity(intent);
-        }
+        mprogressBar.setVisibility(View.VISIBLE);
+        //Loader<String> loader = getLoaderManager().getLoader(JOKE_LOADER);
+        //if(loader == null)
+            getLoaderManager().initLoader(JOKE_LOADER,null,this);
+        //else
+            //getLoaderManager().restartLoader(JOKE_LOADER,null,this);
+
+//        if(jokeText != null){
+//            //Invoke Android Library
+//            Intent intent = new Intent(getActivity(),com.example.mynanodegreeapps.joketellerlibrary.JokeActivity.class);
+//            intent.putExtra(JokeActivity.JOKE_KEY,jokeText);
+//            this.startActivity(intent);
+//        }
     }
 
     @Override
@@ -76,6 +86,14 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     @Override
     public void onLoadFinished(Loader<String> loader, String data) {
         jokeText = data;
+        mprogressBar.setVisibility(View.INVISIBLE);
+        if(jokeText != null){
+            //Invoke Android Library
+            Intent intent = new Intent(getActivity(),com.example.mynanodegreeapps.joketellerlibrary.JokeActivity.class);
+            intent.putExtra(JokeActivity.JOKE_KEY,jokeText);
+            this.startActivity(intent);
+        }
+        getLoaderManager().destroyLoader(JOKE_LOADER);
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.example.mynanodegreeapps.jokeapp;
 
 import android.app.Application;
 
+
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -10,6 +11,8 @@ import android.os.AsyncTask;
 import android.test.AndroidTestCase;
 import android.test.ApplicationTestCase;
 import android.test.LoaderTestCase;
+import android.util.Log;
+
 import junit.framework.Assert;
 
 import java.util.concurrent.ArrayBlockingQueue;
@@ -20,6 +23,8 @@ import java.util.concurrent.ArrayBlockingQueue;
 public class ApplicationTest extends AndroidTestCase {
     public ApplicationTest() {
     }
+
+    private static final String LOG_TAG = ApplicationTest.class.getSimpleName();
 
     private static final String EMPTY_STRING = "";
 
@@ -38,7 +43,8 @@ public class ApplicationTest extends AndroidTestCase {
                 completedLoader.reset();
 
                 // Store the result, unblocking the test thread
-                queue.add(data);
+                if(data != null)
+                    queue.add(data);
             }
         };
 
@@ -60,7 +66,9 @@ public class ApplicationTest extends AndroidTestCase {
         T result;
         while (true) {
             try {
+                Log.d(LOG_TAG,"Before result");
                 result = queue.take();
+                Log.d(LOG_TAG,"After result");
                 break;
             } catch (InterruptedException e) {
                 throw new RuntimeException("waiting thread interrupted", e);
@@ -82,6 +90,7 @@ public class ApplicationTest extends AndroidTestCase {
 
     public void testAsyncTask() {
         String loaderData = getLoaderResultSynchronously(endpointsAsyncTask).toString();
+        Assert.assertNotNull(loaderData);
         Assert.assertFalse("AsyncTask test ", EMPTY_STRING.contentEquals(loaderData));
     }
 }
