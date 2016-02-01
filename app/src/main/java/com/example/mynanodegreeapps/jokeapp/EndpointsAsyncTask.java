@@ -14,6 +14,7 @@ import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 import com.google.api.client.googleapis.services.AbstractGoogleClientRequest;
 import com.google.api.client.googleapis.services.GoogleClientRequestInitializer;
 
+import java.io.EOFException;
 import java.io.IOException;
 
 /**
@@ -55,7 +56,10 @@ public class EndpointsAsyncTask extends AsyncTaskLoader<String> {
         }
         try {
             return myApiService.getJoke().execute().getJoke();
-        } catch (IOException e) {
+        }
+        catch (EOFException e) {
+        }
+        catch (IOException e) {
             Log.e(LOG_TAG,e.getMessage());
         }
         return null;

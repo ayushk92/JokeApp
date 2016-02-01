@@ -33,12 +33,14 @@ dependencies {
     compile project(':joketellerlibrary')
     compile project(path: ':GCEModule', configuration: 'android-endpoints')
     compile 'com.android.support:appcompat-v7:23.1.1'
-    compile 'com.google.android.gms:play-services-ads:8.3.0'
     compile 'com.android.support:design:23.1.1'
     compile 'com.android.support:support-v4:23.1.1'
 }
 
+dependencies{
+    freeCompile 'com.google.android.gms:play-services-ads:8.3.0'
+}
 
-task testGCE{
-    dependsOn ':GCEModule:assemble',':GCEModule:appengineRun','connectedCheck',':GCEModule:appengineStop'
+task testGCE {
+    dependsOn ':GCEModule:assemble', ':GCEModule:appengineRun', 'connectedCheck', ':GCEModule:appengineStop'
 }
